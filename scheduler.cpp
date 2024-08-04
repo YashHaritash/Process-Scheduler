@@ -262,7 +262,7 @@ void round_robin_scheduling(vector<Process> &processes, int quantum)
 
     while (completed < processes.size())
     {
-        // Add new processes to the ready queue
+        // Add new processes to the ready queue at each time quantum
         for (size_t i = 0; i < processes.size(); ++i)
         {
             if (processes[i].arrival_time <= current_time && !finished[i] && !in_queue[i])
@@ -301,6 +301,16 @@ void round_robin_scheduling(vector<Process> &processes, int quantum)
 
         current_time += time_slice;
 
+        // Add newly arrived processes to the ready queue after processing
+        for (size_t i = 0; i < processes.size(); ++i)
+        {
+            if (processes[i].arrival_time <= current_time && !finished[i] && !in_queue[i])
+            {
+                ready_queue.push(i);
+                in_queue[i] = true;
+            }
+        }
+
         if (remaining_time[current_process] == 0)
         {
             completed++;
@@ -325,6 +335,7 @@ void round_robin_scheduling(vector<Process> &processes, int quantum)
     print_process_table(processes, "Round Robin");
     print_gantt_chart(gantt_chart, idle_periods);
 }
+
 void priority_scheduling(vector<Process> &processes)
 {
     int current_time = 0;
