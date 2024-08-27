@@ -1,65 +1,49 @@
 #include "scheduler.h"
 #include <iostream>
-#include <vector>
-
-using namespace std;
 
 int main()
 {
-    vector<Process> processes;
-    int n, id, arrival, burst, quantum, priority;
+    int n;
 
-    cout << "Enter the number of processes: ";
-    cin >> n;
+    std::cout << "Enter the number of processes: ";
+    std::cin >> n;
 
-    // Collect process data
+    std::vector<Process> processes(n);
+
+    std::cout << "Enter process details (ID ArrivalTime BurstTime Priority):\n";
     for (int i = 0; i < n; ++i)
     {
-        cout << "Enter arrival time and burst time for process " << i << ": ";
-        cin >> arrival >> burst;
-
-        // Default priority to 0
-        priority = 0;
-
-        processes.emplace_back(i, arrival, burst, priority);
+        std::cout << "Process " << i + 1 << ": ";
+        std::cin >> processes[i].id >> processes[i].arrivalTime >> processes[i].burstTime >> processes[i].priority;
     }
 
-    cout << "Choose scheduling algorithm:\n1. FCFS\n2. SJF\n3. SJF Preemptive\n4. HRRN\n5. Round Robin\n6. Priority\n";
-    int choice;
-    cin >> choice;
+    int quantum;
+    std::cout << "Enter the time quantum for Round Robin scheduling: ";
+    std::cin >> quantum;
 
-    switch (choice)
-    {
-    case 1:
-        fcfs_scheduling(processes);
-        break;
-    case 2:
-        sjf_scheduling(processes);
-        break;
-    case 3:
-        sjf_preemptive_scheduling(processes);
-        break;
-    case 4:
-        hrrn_scheduling(processes);
-        break;
-    case 5:
-        cout << "Enter time quantum for Round Robin: ";
-        cin >> quantum;
-        round_robin_scheduling(processes, quantum);
-        break;
-    case 6:
-        // Ask for priority values only if Priority Scheduling is chosen
-        for (int i = 0; i < n; ++i)
-        {
-            cout << "Enter priority for process " << i << ": ";
-            cin >> priority;
-            processes[i].priority = priority;
-        }
-        priority_scheduling(processes);
-        break;
-    default:
-        cout << "Invalid choice" << endl;
-    }
+    // Run FCFS
+    std::vector<Process> fcfsProcesses = processes;
+    FCFS(fcfsProcesses);
+
+    // Run SJF
+    std::vector<Process> sjfProcesses = processes;
+    SJF(sjfProcesses);
+
+    // Run SJF Preemptive
+    std::vector<Process> sjfPreemptiveProcesses = processes;
+    SJFPreemptive(sjfPreemptiveProcesses);
+
+    // Run HRRN
+    std::vector<Process> hrrnProcesses = processes;
+    HRRN(hrrnProcesses);
+
+    // Run Round Robin
+    std::vector<Process> rrProcesses = processes;
+    RoundRobin(rrProcesses, quantum);
+
+    // Run Priority Scheduling
+    std::vector<Process> priorityProcesses = processes;
+    PriorityScheduling(priorityProcesses);
 
     return 0;
 }
